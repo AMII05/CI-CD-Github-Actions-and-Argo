@@ -14,9 +14,12 @@ jobs:
         run: |
           echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
       
-      - name: login-docker
-        run: echo ${{ secrets.JFROG_PASSWORD }} | docker login pedrolopez030200.jfrog.io -u ${{ secrets.JFROG_USERNAME }} --password-stdin
-
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
       - name: checkout
         uses: actions/checkout@v2
 
@@ -33,8 +36,8 @@ jobs:
 
       - name: upload image to registry
         run: |
-          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} pedrolopez030200.jfrog.io/pedro-repo-docker/test-app:${{ steps.get-version.outputs.VERSION }}
-          docker push pedrolopez030200.jfrog.io/pedro-repo-docker/test-app:${{ steps.get-version.outputs.VERSION }}  
+          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} amitabiswas05/argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}
+          docker push amitabiswas05/argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}  
 
       - name: install yq
         uses: mikefarah/yq@v4.15.1 
@@ -42,7 +45,7 @@ jobs:
       - name: update infra yaml file
         run: |
           cd infra
-          yq e -i '.spec.template.spec.containers[0].image="pedrolopez030200.jfrog.io/pedro-repo-docker-local/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
+          yq e -i '.spec.template.spec.containers[0].image="amitabiswas05/argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
           cat calc-deployment.yml
 
       - name: push change
@@ -51,9 +54,9 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: infra/calc-deployment.yml
-          destination_repo: PedroLopezITBA/CI-CD-Github-Actions-and-Argo
+          destination_repo: AMII05/CI-CD-Github-Actions-and-Argo
           destination_branch: main
           destination_folder: infra
-          user_email: pelopez@itba.edu.ar
-          user_name: PedroLopezITBA
+          user_email: erbiswasami05@gmail.com
+          user_name: AMII05
           commit_message: update image version ${{ steps.get_version.outputs.VERSION }} in yml file
