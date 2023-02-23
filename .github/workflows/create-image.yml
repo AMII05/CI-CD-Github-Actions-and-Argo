@@ -34,10 +34,18 @@ jobs:
         run: |
           echo ::set-output name=IMAGE_ID::$(docker images -q test-app:${{ steps.get-version.outputs.VERSION }})
 
+#       - name: Build and push Docker image
+#         uses: docker/build-push-action@v4
+#         with:
+#           context: .
+#           push: true
+#           registry: amitabiswas05/argo_cicd
+#           tags: ${{ steps.meta.outputs.tags }}
+#           labels: ${{ steps.meta.outputs.labels }}
           
       - name: upload image to registry
         run: |
-          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}
+          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} test-app:${{ steps.get-version.outputs.VERSION }}
           docker push argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}  
 
       - name: install yq
