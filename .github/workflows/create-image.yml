@@ -34,8 +34,8 @@ jobs:
         with:
            context: ./app/.
            push: true
-           registry: amitabiswas05/test-app
-           tags: test-app:${{ steps.get-version.outputs.VERSION }}
+#           registry: amitabiswas05/test-app
+           tags: amitabiswas05/test-app:${{ steps.get-version.outputs.VERSION }}
 #           labels: ${{ steps.meta.outputs.labels }}
 
       - name: get-images-id
