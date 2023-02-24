@@ -55,7 +55,7 @@ jobs:
       - name: update infra yaml file
         run: |
           cd infra
-          yq e -i '.spec.template.spec.containers[0].image="test-app/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
+          yq e -i '.spec.template.spec.containers[0].image="amitabiswas05/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
           cat calc-deployment.yml
 
       - name: push change
