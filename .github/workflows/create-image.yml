@@ -28,12 +28,13 @@ jobs:
 #           cd app
 #           docker build -t test-app:${{ steps.get-version.outputs.VERSION }} .
 #           echo 'Created Image with name:tag = test-app:${{ steps.get-version.outputs.VERSION }}'
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
            context: ./app/.
            push: true
-           registry: amitabiswas05/argo_cicd
+           registry: amitabiswas05/test-app
            tags: test-app:${{ steps.get-version.outputs.VERSION }}
 #           labels: ${{ steps.meta.outputs.labels }}
 
@@ -54,7 +55,7 @@ jobs:
       - name: update infra yaml file
         run: |
           cd infra
-          yq e -i '.spec.template.spec.containers[0].image="argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
+          yq e -i '.spec.template.spec.containers[0].image="test-app/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
           cat calc-deployment.yml
 
       - name: push change
