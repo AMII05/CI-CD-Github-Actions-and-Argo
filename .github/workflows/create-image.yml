@@ -31,7 +31,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-           context: .
+           context: ./app/.
            push: true
            registry: amitabiswas05/argo_cicd
            tags: test-app:${{ steps.get-version.outputs.VERSION }}
