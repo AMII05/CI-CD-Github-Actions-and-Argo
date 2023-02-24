@@ -23,21 +23,31 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: create image
-        run: |
-          cd app
-          docker build -t test-app:${{ steps.get-version.outputs.VERSION }} .
-          echo 'Created Image with name:tag = test-app:${{ steps.get-version.outputs.VERSION }}'
+#       - name: create image
+#         run: |
+#           cd app
+#           docker build -t test-app:${{ steps.get-version.outputs.VERSION }} .
+#           echo 'Created Image with name:tag = test-app:${{ steps.get-version.outputs.VERSION }}'
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+           context: ./app/.
+           push: true
+#           registry: amitabiswas05/test-app
+           tags: amitabiswas05/test-app:${{ steps.get-version.outputs.VERSION }}
+#           labels: ${{ steps.meta.outputs.labels }}
 
       - name: get-images-id
         id: image-id
         run: |
           echo ::set-output name=IMAGE_ID::$(docker images -q test-app:${{ steps.get-version.outputs.VERSION }})
 
-      - name: upload image to registry
-        run: |
-          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} amitabiswas05/argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}
-          docker push amitabiswas05/argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}  
+          
+#       - name: upload image to registry
+#         run: |
+#          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} test-app:${{ steps.get-version.outputs.VERSION }}
+#          docker push test-app:${{ steps.get-version.outputs.VERSION }}  
 
       - name: install yq
         uses: mikefarah/yq@v4.15.1 
@@ -45,7 +55,7 @@ jobs:
       - name: update infra yaml file
         run: |
           cd infra
-          yq e -i '.spec.template.spec.containers[0].image="amitabiswas05/argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
+          yq e -i '.spec.template.spec.containers[0].image="test-app/test-app:${{ steps.get-version.outputs.VERSION }}"' calc-deployment.yml
           cat calc-deployment.yml
 
       - name: push change

@@ -15,7 +15,11 @@ spec:
         app: calculator
     spec:
       containers:
+<<<<<<< HEAD
         - image: amitabiswas05/test-app
+=======
+        - image: test-app/test-app:v1.1.5
+>>>>>>> b0bb17a49f62029a8ffd6673a51e8ad34ed258ba
           name: calculator-container
           ports:
             - containerPort: 3000
