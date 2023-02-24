@@ -23,30 +23,30 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: create image
-        run: |
-          cd app
-          docker build -t test-app:${{ steps.get-version.outputs.VERSION }} .
-          echo 'Created Image with name:tag = test-app:${{ steps.get-version.outputs.VERSION }}'
+#       - name: create image
+#         run: |
+#           cd app
+#           docker build -t test-app:${{ steps.get-version.outputs.VERSION }} .
+#           echo 'Created Image with name:tag = test-app:${{ steps.get-version.outputs.VERSION }}'
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+           context: .
+           push: true
+           registry: amitabiswas05/argo_cicd
+           tags: test-app:${{ steps.get-version.outputs.VERSION }}
+#           labels: ${{ steps.meta.outputs.labels }}
 
       - name: get-images-id
         id: image-id
         run: |
           echo ::set-output name=IMAGE_ID::$(docker images -q test-app:${{ steps.get-version.outputs.VERSION }})
 
-#       - name: Build and push Docker image
-#         uses: docker/build-push-action@v4
-#         with:
-#            context: .
-#            push: true
-#            registry: amitabiswas05/argo_cicd
-#            tags: test-app:${{ steps.get-version.outputs.VERSION }}
-#            labels: ${{ steps.meta.outputs.labels }}
           
-      - name: upload image to registry
-        run: |
-         docker tag ${{ steps.image-id.outputs.IMAGE_ID }} test-app:${{ steps.get-version.outputs.VERSION }}
-         docker push test-app:${{ steps.get-version.outputs.VERSION }}  
+#       - name: upload image to registry
+#         run: |
+#          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} test-app:${{ steps.get-version.outputs.VERSION }}
+#          docker push test-app:${{ steps.get-version.outputs.VERSION }}  
 
       - name: install yq
         uses: mikefarah/yq@v4.15.1 
