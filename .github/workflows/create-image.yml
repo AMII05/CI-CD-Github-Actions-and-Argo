@@ -46,7 +46,7 @@ jobs:
       - name: upload image to registry
         run: |
          docker tag ${{ steps.image-id.outputs.IMAGE_ID }} test-app:${{ steps.get-version.outputs.VERSION }}
-         docker push argo_cicd/test-app:${{ steps.get-version.outputs.VERSION }}  
+         docker push test-app:${{ steps.get-version.outputs.VERSION }}  
 
       - name: install yq
         uses: mikefarah/yq@v4.15.1 
